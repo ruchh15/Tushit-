@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday Tushit 🎂</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Poppins, sans-serif;
+    background:linear-gradient(135deg,#ffd6e8,#fff0f7);
+    height:100vh;
+    overflow:hidden;
+}
+.center{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100vh;
+    text-align:center;
+}
+#countdownBox{
+    animation:pulse 2s infinite;
+}
+@keyframes pulse{
+    0%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+    100%{transform:scale(1)}
+}
+#countdown{
+    color:#ad1457;
+    font-size:1.2rem;
+    font-weight:600;
+}
+#tapOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(255,240,247,.97);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:10;
+}
+.card{
+    background:white;
+    padding:40px;
+    border-radius:24px;
+    max-width:580px;
+    display:none;
+    box-shadow:0 25px 60px rgba(0,0,0,.15);
+}
+canvas{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confetti"></canvas>
+
+<div class="center">
+    <div id="countdownBox">
+        <h1>Something fun is waiting 🌸</h1>
+        <div id="countdown"></div>
+    </div>
+
+    <div class="card" id="card">
+        <h1>Happy Birthday Tushit 🎉</h1>
+        <div id="typedText"></div>
+    </div>
+</div>
+
+<div id="tapOverlay">
+    <div>
+        <h1 style="color:#e91e63;">Happy Birthday Tushit 🎂</h1>
+        <p>Tap anywhere to begin 🎶</p>
+    </div>
+</div>
+
+<!-- 🎶 AUDIO FILE -->
+<audio id="music" src="tenu-sang-rakhna.mp3" preload="auto"></audio>
+
+<script>
+const birthday = new Date("January 17, 2026 00:00:00").getTime();
+
+const message = [
+"Happy Birthday, Tushit 🎉🥳",
+"Hope your day is filled with laughter, smiles, and good vibes!",
+"May this year bring you exciting adventures, fun surprises,",
+"and moments that make you happiest.",
+"Wishing you health, happiness, and endless joy 🌟",
+"Have an amazing day celebrating YOU! 🎂✨"
+];
+
+const countdown=document.getElementById("countdown");
+const box=document.getElementById("countdownBox");
+const overlay=document.getElementById("tapOverlay");
+const card=document.getElementById("card");
+const text=document.getElementById("typedText");
+const music=document.getElementById("music");
+
+let shown=false;
+setInterval(()=>{
+    const now=Date.now();
+    const diff=birthday-now;
+    if(diff<=0&&!shown){
+        shown=true;
+        box.style.display="none";
+        overlay.style.display="flex";
+    }
+    if(diff>0){
+        const d=Math.floor(diff/86400000);
+        const h=Math.floor(diff/3600000)%24;
+        const m=Math.floor(diff/60000)%60;
+        const s=Math.floor(diff/1000)%60;
+        countdown.innerHTML=`${d} days ${h} hrs ${m} mins ${s} secs`;
+    }
+},1000);
+
+overlay.onclick=()=>{
+    overlay.style.display="none";
+    card.style.display="block";
+    music.play();
+    typeMessage();
+    burstConfetti();
+};
+
+let line=0,char=0;
+function typeMessage(){
+    if(line<message.length){
+        if(char<message[line].length){
+            text.innerHTML+=message[line][char++];
+            setTimeout(typeMessage,35);
+        }else{
+            text.innerHTML+="<br><br>";
+            line++; char=0;
+            setTimeout(typeMessage,500);
+        }
+    }
+}
+
+const canvas=document.getElementById("confetti");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let confetti=[];
+
+function burstConfetti(){
+    for(let i=0;i<300;i++){
+        confetti.push({
+            x:Math.random()*canvas.width,
+            y:-Math.random()*canvas.height,
+            r:Math.random()*6+4,
+            d:Math.random()*4+2,
+            c:["#e53935","#1e88e5","#f9a825"][Math.floor(Math.random()*3)]
+        });
+    }
+}
+
+setInterval(()=>{
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.c;
+        ctx.fill();
+        p.y+=p.d;
+    });
+},20);
+</script>
+
+</body>
+</html>
